@@ -12,18 +12,16 @@ int main() {
 
 	namespace spirit = boost::spirit;
 
+	typedef ascii::space_type skipper_type;
 	typedef spirit::istream_iterator iterator_type;
-	typedef do_grammar<iterator_type> grammar;
+	typedef do_grammar<iterator_type, skipper_type> grammar;
 
 	grammar g;
 
 	iterator_type iter(std::cin);
 	iterator_type end;
 
-	// std::string::const_iterator iter = str.begin();
-	// std::string::const_iterator end = str.end();
-
-	bool r = qi::parse(iter, end, g);
+	bool r = qi::phrase_parse(iter, end, g, skipper_type());
 
 	if (true == r && iter == end) { std::cout << "yay" << std::endl; }
 	else { std::cout << "nay" << std::endl; }
