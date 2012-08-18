@@ -25,7 +25,7 @@ int main() {
 
 	bool r = qi::parse(iter, end, g);
 
-	if (true == r) { std::cout << "yay" << std::endl; }
+	if (true == r && iter == end) { std::cout << "yay" << std::endl; }
 	else { std::cout << "nay" << std::endl; }
 }
 
