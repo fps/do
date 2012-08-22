@@ -28,13 +28,14 @@ struct do_grammar;
 	grammars
 */
 
+#if 0
 template<class Iterator, class Skipper>
 struct do_expression : qi::grammar<Iterator, Skipper>{
 	do_expression(do_expression_list<Iterator, Skipper> *exp_list) : 
 		do_expression::base_type(expression, "do"), 
 		expression_list(exp_list)
 	{
-		expression =      do_expression<Iterator, Skipper>() 
+		expression =      do_expression<Iterator, Skipper>(*exp_list) 
 		                | *expression_list 
 		                | do_block<Iterator, Skipper>()
 		                | qi::double_;
@@ -76,5 +77,27 @@ struct do_grammar : qi::grammar<Iterator, Skipper>{
 	}
 
 	qi::rule<Iterator, Skipper> expression;
+};
+#endif 
+
+template<class Iterator, class Skipper>
+struct do_grammar : qi::grammar<Iterator, Skipper>{
+	do_grammar() : 
+		do_grammar::base_type(expression, "do") 
+	{
+		identifier = +qi::alpha;
+		literal = qi::double_ | qi::int_;
+		assignment = identifier >> ":=" >> expression;
+		expression_list = -(expression >> *(';' >> -expression));
+		do_expression = qi::lit("do") >> expression_list >> "done";
+		expression = (qi::double_ | do_expression | assignment) >> *(";" >>  expression) >> -qi::lit(";");
+	}
+
+	qi::rule<Iterator, Skipper> identifier;
+	qi::rule<Iterator, Skipper> literal;
+	qi::rule<Iterator, Skipper> assignment;
+	qi::rule<Iterator, Skipper> expression;
+	qi::rule<Iterator, Skipper> do_expression;
+	qi::rule<Iterator, Skipper> expression_list;
 };
 
