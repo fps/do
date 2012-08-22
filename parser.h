@@ -13,14 +13,26 @@ struct do_grammar : qi::grammar<Iterator, Skipper>{
 	do_grammar() : 
 		do_grammar::base_type(expression, "do") 
 	{
-		identifier = +qi::alpha;
+
+		identifier = qi::alpha >> *qi::alnum;
+
 		literal = qi::double_ | qi::int_;
+
 		assignment = identifier >> ":=" >> expression;
+
 		expression_list = -(expression >> *(';' >> -expression));
+
 		do_expression = qi::lit("do") >> expression_list >> "done";
-		expression = (qi::double_ | do_expression | assignment) >> *(";" >>  expression) >> -qi::lit(";");
+
+		expression = (
+		                  literal 
+		                | do_expression 
+		                | assignment
+		              ) 
+		              >> *(";" >>  expression) >> -qi::lit(";");
 	}
 
+	qi::rule<Iterator, Skipper> function_call;
 	qi::rule<Iterator, Skipper> identifier;
 	qi::rule<Iterator, Skipper> literal;
 	qi::rule<Iterator, Skipper> assignment;
