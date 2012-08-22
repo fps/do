@@ -14,6 +14,11 @@ struct do_grammar : qi::grammar<Iterator, Skipper>{
 		do_grammar::base_type(expression, "do") 
 	{
 
+		/*
+			A legal identifier is a string starting with 
+			a letter and followed by option alphanumeric 
+			letters
+		*/
 		identifier = qi::alpha >> *qi::alnum;
 
 		literal = qi::double_ | qi::int_;
