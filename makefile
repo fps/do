@@ -1,8 +1,10 @@
 #do: main.cc parser.h parser.cc
 #	g++ -g -o do -I . ${CXXFLAGS} main.cc
 
+INCLUDES=-I .
+
 do: lex.yy.c y.tab.c
-	gcc ${CFLAGS} -o do lex.yy.c y.tab.c -lfl
+	gcc ${CFLAGS} ${INCLUDES} -o do lex.yy.c y.tab.c 
 
 lex.yy.c: do.l
 	lex do.l

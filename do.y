@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <y.tab.h>
 
 void yyerror(const char *str)
 {
@@ -19,13 +20,55 @@ main()
 
 %}
 
-%token DO DONE INTEGER ASSIGNMENT_OPERATOR SEMICOLON
+%token DO DONE NUMBER ASSIGNMENT_OPERATOR SEMICOLON IDENTIFIER
+
+%%
 
 expressions:
 	| expressions expression SEMICOLON
+
+literal:
+	number
 	;
 
 expression:
-	INTEGER
+	literal
+	|
+	do
+	|
+	assignment
+	|
+	identifier
 	;
-         
+
+do:
+	DO expressions DONE
+	{
+		printf("do block\n");
+	}
+	;
+	
+assignment:
+	identifier ASSIGNMENT_OPERATOR expression
+	{
+		printf("assignment\n");
+	}
+	;
+
+identifier:
+	IDENTIFIER
+	{
+		printf("identifier\n");
+	}
+	;
+
+number:
+	NUMBER
+	{
+		printf("number\n");
+	}
+	;
+
+
+        
+
