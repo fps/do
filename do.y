@@ -1,8 +1,14 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include <y.tab.h>
 
+extern "C" {
+	#include <y.tab.hh>
+	int yyparse(void);
+	int yylex(void);  
+}
+
+extern "C" {
 void yyerror(const char *str)
 {
 	fprintf(stderr,"error: %s\n",str);
@@ -13,38 +19,53 @@ int yywrap()
 	return 1;
 } 
 
+}
 main() 
 {
 	yyparse();
 }
 
+#include <iostream>
+#include <boost/shared_ptr.hpp>
+
+using std::cout;
+using std::endl;
+
 %}
 
-%token DO DONE NUMBER ASSIGNMENT_OPERATOR SEMICOLON IDENTIFIER
-
+%token DO 
+%token DONE 
+%token FLOATING_POINT_NUMBER 
+%token NUMBER 
+%token ASSIGNMENT_OPERATOR 
+%token SEMICOLON 
+%token IDENTIFIER
+%token DOT
+%token OPEN_BRACKET
+%token CLOSING_BRACKET
+%token OPEN_SQUARE_BRACKET
+%token CLOSING_SQUARE_BRACKET
+%token OPEN_WIGGLY_BRACKET
+%token CLOSING_WIGGLY_BRACKET
+ 
 %%
 
 expressions:
-	| expressions expression SEMICOLON
+	| 
+	expressions expression SEMICOLON
 
 literal:
 	number
 	;
 
 expression:
-	literal
-	|
-	do
-	|
-	assignment
-	|
-	identifier
+	literal | do | assignment | identifier
 	;
 
 do:
 	DO expressions DONE
 	{
-		printf("do block\n");
+		cout << "do block " << $1 << endl;
 	}
 	;
 	
@@ -58,7 +79,12 @@ assignment:
 identifier:
 	IDENTIFIER
 	{
-		printf("identifier\n");
+		cout << "identifier " << yytext;
+	}
+	|
+	IDENTIFIER DOT IDENTIFIER
+	{
+		printf("dot\n");
 	}
 	;
 
@@ -66,6 +92,11 @@ number:
 	NUMBER
 	{
 		printf("number\n");
+	}
+	|
+	FLOATING_POINT_NUMBER
+	{
+		printf("floating point number\n");
 	}
 	;
 
