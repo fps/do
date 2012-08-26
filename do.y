@@ -79,10 +79,10 @@ assignment:
 identifier:
 	IDENTIFIER
 	{
-		cout << "identifier " << yytext;
+		cout << "identifier " << (char*)$1 << endl;
 	}
 	|
-	IDENTIFIER DOT IDENTIFIER
+	identifier DOT IDENTIFIER
 	{
 		printf("dot\n");
 	}
