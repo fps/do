@@ -8,20 +8,7 @@
 
 #include <ast.h>
 
-#if 0
-typedef struct node_base {
-	std::vector<boost::shared_ptr<node_base> > nodes;
-
-	virtual ~node_base() { }
-} node_base;
-
-template <class T>
-struct node : node_base {
-	T value;
-
-	node(T t) : value(t) { }
-};
-#endif
+#define YYSTYPE shared_ptr<node_base>
 
 extern "C" {
 	#include <y.tab.hh>
@@ -42,20 +29,21 @@ void yyerror(const char *str)
 
 }
 
-main() 
+int main() 
 {
 	yyparse();
 }
 
 using std::cout;
 using std::endl;
+using std::string;
 
 %}
 
-%union {
-	char *string;
-	node_t *node;
-}
+//%union {
+//	char *string;
+//	ast* node;
+//}
 
 
 %token DO 
@@ -73,7 +61,6 @@ using std::endl;
 %token OPEN_WIGGLY_BRACKET
 %token CLOSING_WIGGLY_BRACKET
 
-%type <string> IDENTIFIER 
 
 %%
 
@@ -106,7 +93,7 @@ assignment:
 identifier:
 	IDENTIFIER
 	{
-		cout << "identifier " << $1 << endl;
+		cout << "identifier " << dynamic_pointer_cast<node<string> >($1)->t << endl;
 	}
 	|
 	identifier DOT IDENTIFIER
@@ -118,12 +105,14 @@ identifier:
 number:
 	NUMBER
 	{
-		printf("number\n");
+		cout << "number: " << dynamic_pointer_cast<node<int> >($1)->t << endl;
+		$$ = $1;
 	}
 	|
 	FLOATING_POINT_NUMBER
 	{
-		printf("floating point number\n");
+		cout << "floating point number: " << dynamic_pointer_cast<node<double> >($1)->t << endl;
+		$$ = $1;
 	}
 	;
 
