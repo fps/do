@@ -6,6 +6,9 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
+#include <ast.h>
+
+#if 0
 typedef struct node_base {
 	std::vector<boost::shared_ptr<node_base> > nodes;
 
@@ -18,6 +21,7 @@ struct node : node_base {
 
 	node(T t) : value(t) { }
 };
+#endif
 
 extern "C" {
 	#include <y.tab.hh>
@@ -27,16 +31,17 @@ extern "C" {
 
 extern "C" {
 void yyerror(const char *str)
-{
-	fprintf(stderr,"error: %s\n",str);
-}
+	{
+		fprintf(stderr,"error: %s\n",str);
+	}
  
-int yywrap()
-{
-	return 1;
-} 
+	int yywrap()
+	{
+		return 1;
+	} 
 
 }
+
 main() 
 {
 	yyparse();
@@ -49,7 +54,7 @@ using std::endl;
 
 %union {
 	char *string;
-	node_base *node;
+	node_t *node;
 }
 
 
