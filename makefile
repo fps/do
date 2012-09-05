@@ -3,6 +3,8 @@
 
 INCLUDES=-I .
 
+CFLAGS ?= -g
+
 do: lex.yy.o y.tab.o
 	g++ ${CFLAGS} -Wall ${INCLUDES} -o do lex.yy.o y.tab.o 
 

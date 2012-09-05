@@ -4,5 +4,5 @@ f := do
 	foo.fd := 9.3;
 done;
 
-x := 1;
+x.y.z := 1;
 

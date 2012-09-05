@@ -3,8 +3,7 @@
 #include <string.h>
 
 #include <iostream>
-#include <boost/shared_ptr.hpp>
-#include <vector>
+#include <string>
 
 #include <ast.h>
 
@@ -61,7 +60,6 @@ using std::string;
 %token OPEN_WIGGLY_BRACKET
 %token CLOSING_WIGGLY_BRACKET
 
-
 %%
 
 expressions:
@@ -70,10 +68,19 @@ expressions:
 
 literal:
 	number
+	{
+		$$ = $1;
+	}
 	;
 
 expression:
-	literal | do | assignment | identifier
+	literal 
+	| 
+	do 
+	| 
+	assignment 
+	| 
+	identifier
 	;
 
 do:
@@ -93,25 +100,26 @@ assignment:
 identifier:
 	IDENTIFIER
 	{
-		cout << "identifier " << dynamic_pointer_cast<node<string> >($1)->t << endl;
+		$$ = $1;
 	}
 	|
-	identifier DOT IDENTIFIER
+	IDENTIFIER DOT identifier
 	{
-		printf("dot\n");
+		$$ = make_node(
+			identifier(dynamic_pointer_cast<node<identifier> >($1)->t.name, 
+			dynamic_pointer_cast<node<identifier> >($3))
+		); 
 	}
 	;
 
 number:
 	NUMBER
 	{
-		cout << "number: " << dynamic_pointer_cast<node<int> >($1)->t << endl;
 		$$ = $1;
 	}
 	|
 	FLOATING_POINT_NUMBER
 	{
-		cout << "floating point number: " << dynamic_pointer_cast<node<double> >($1)->t << endl;
 		$$ = $1;
 	}
 	;
