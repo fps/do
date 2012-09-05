@@ -2,6 +2,23 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <iostream>
+#include <boost/shared_ptr.hpp>
+#include <vector>
+
+typedef struct node_base {
+	std::vector<boost::shared_ptr<node_base> > nodes;
+
+	virtual ~node_base() { }
+} node_base;
+
+template <class T>
+struct node : node_base {
+	T value;
+
+	node(T t) : value(t) { }
+};
+
 extern "C" {
 	#include <y.tab.hh>
 	int yyparse(void);
@@ -25,13 +42,16 @@ main()
 	yyparse();
 }
 
-#include <iostream>
-#include <boost/shared_ptr.hpp>
-
 using std::cout;
 using std::endl;
 
 %}
+
+%union {
+	char *string;
+	node_base *node;
+}
+
 
 %token DO 
 %token DONE 
@@ -47,7 +67,9 @@ using std::endl;
 %token CLOSING_SQUARE_BRACKET
 %token OPEN_WIGGLY_BRACKET
 %token CLOSING_WIGGLY_BRACKET
- 
+
+%type <string> IDENTIFIER 
+
 %%
 
 expressions:
@@ -65,7 +87,7 @@ expression:
 do:
 	DO expressions DONE
 	{
-		cout << "do block " << $1 << endl;
+		cout << "do block " << endl;
 	}
 	;
 	
@@ -79,7 +101,7 @@ assignment:
 identifier:
 	IDENTIFIER
 	{
-		cout << "identifier " << (char*)$1 << endl;
+		cout << "identifier " << $1 << endl;
 	}
 	|
 	identifier DOT IDENTIFIER

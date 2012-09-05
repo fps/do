@@ -21,4 +21,4 @@ y.tab.hh y.tab.cc: do.y
 .PHONY: clean
 
 clean:
-	rm -rf lex.yy.c y.tab.cc y.tab.h *.o do
+	rm -rf lex.yy.c y.tab.cc y.tab.hh *.o do

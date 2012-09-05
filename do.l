@@ -5,7 +5,7 @@
 %%
 do                   return DO;
 done                 return DONE; 
-[a-zA-Z][a-zA-Z0-9]* yylval = (char*)yytext; return IDENTIFIER;
+[a-zA-Z][a-zA-Z0-9]* /*yylval = (char*)yytext; */ return IDENTIFIER;
 [0-9]+               return NUMBER;
 [0-9]+\.[0-9]+       return FLOATING_POINT_NUMBER;
 ":="                 return ASSIGNMENT_OPERATOR;
