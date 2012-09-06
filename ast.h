@@ -26,13 +26,29 @@ struct node : node_base {
 	node(T t) : t(t) { }
 };
 
+typedef shared_ptr<node_base> node_ptr;
+
 template <class T>
-shared_ptr<node_base> make_node(T t) {
-	return shared_ptr<node_base>(new node<T>(t));
+node_ptr make_node(T t) {
+	return node_ptr(new node<T>(t));
 }
 
 struct expression : node_base {
 
+};
+
+struct identifier;
+
+struct assignment : node_base {
+	shared_ptr<node<identifier> > id;
+	shared_ptr<node<expression> > exp;
+
+	assignment(shared_ptr<node<identifier> > id, shared_ptr<node<expression> > exp) :
+		id(id),
+		exp(exp)
+	{
+		DO_DBG("assignment")
+	}
 };
 
 template <class T>
@@ -46,8 +62,8 @@ struct literal : expression {
 };
 
 template <class T>
-shared_ptr<node_base> make_literal(T t) {
-	return shared_ptr<node_base>(new literal<T>(t));
+node_ptr make_literal(T t) {
+	return node_ptr(new literal<T>(t));
 }
 
 struct identifier {
@@ -61,7 +77,7 @@ struct identifier {
 		name(name), 
 		selector(selector) 
 	{ 
-		DO_DBG(get_name())
+		DO_DBG("identifier: " << get_name())
 	}
 
 	string get_name() {

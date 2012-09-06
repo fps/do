@@ -93,7 +93,7 @@ do:
 assignment:
 	identifier ASSIGNMENT_OPERATOR expression
 	{
-		printf("assignment\n");
+		$$ = make_node(assignment(dynamic_pointer_cast<node<identifier> >($1), dynamic_pointer_cast<node<expression> >($3)));
 	}
 	;
 
